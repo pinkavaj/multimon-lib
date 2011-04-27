@@ -5,7 +5,7 @@ MACH		=$(shell uname -m)
 CFLAGS		=-Wall -Wstrict-prototypes -I/usr/X11R6/include -I$(ROOT)/include -I
 ifeq ($(OS),SunOS)
 ifeq ($(DEBUG),y)
-CFLAGS		+=-g -O -DSUN_AUDIO -DARCH_SPARC
+CFLAGS		+=-g -O -DSUN_AUDIO -DARCH_SPARC -DDEBUG
 else
 CFLAGS		+=-O3 -DSUN_AUDIO -DARCH_SPARC
 endif
@@ -13,7 +13,7 @@ LDFLAGSX	=-lX11 -L/usr/X11R6/lib -R/usr/X11R6/lib -lsocket -lnsl
 else
 ifeq ($(MACH),x86_64)
 ifeq ($(DEBUG),y)
-CFLAGS          +=-g -O -DARCH_X86_64
+CFLAGS          +=-g -O -DARCH_X86_64 -DDEBUG
 else
 CFLAGS          +=-O3 -DARCH_X86_64
 endif
@@ -21,7 +21,7 @@ LDFLAGSX        =-lX11 -L/usr/X11R6/lib64
 else
 ifeq ($(DEBUG),y)
 CFLAGS		+=-g -O -march=i486 -mtune=pentium4 -falign-loops=2 -falign-jumps=2 \
-		  -malign-functions=2 -DARCH_I386
+		  -malign-functions=2 -DARCH_I386 -DDEBUG
 else
 CFLAGS		+=-O3 -march=i486 -mtune=pentium4 -falign-loops=2 -falign-jumps=2 \
 		  -falign-functions=2 -DARCH_I386

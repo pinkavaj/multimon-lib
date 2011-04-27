@@ -62,21 +62,7 @@ static unsigned int dem_mask[(NUMDEMOD+31)/32];
 #define MASK_RESET(n) dem_mask[(n)>>5] &= ~(1<<((n)&0x1f))
 #define MASK_ISSET(n) (dem_mask[(n)>>5] & 1<<((n)&0x1f))
 
-/* ---------------------------------------------------------------------- */
-
-static int verbose_level = 0;
-
-/* ---------------------------------------------------------------------- */
-
-void verbprintf(int verb_level, const char *fmt, ...)
-{
-        va_list args;
-        
-        va_start(args, fmt);
-        if (verb_level <= verbose_level)
-                vfprintf(stdout, fmt, args);
-        va_end(args);
-}
+extern int multimon_debug_level;
 
 /* ---------------------------------------------------------------------- */
 
@@ -394,7 +380,7 @@ int main(int argc, char *argv[])
 			break;
 
 		case 'v':
-			verbose_level = strtoul(optarg, 0, 0);
+			multimon_debug_level = strtoul(optarg, 0, 0);
 			break;
 
 		case 't':

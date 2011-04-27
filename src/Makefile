@@ -44,6 +44,11 @@ dist:
 	tar cjf multimon.tar.bz2 COPYING Makefile filter.h filter-i386.h gen.h multimon.h \
 			$(SRC_APP) $(SRC_L1) $(SRC_L2) $(SRC_GEN) mkcostab.c
 
+install: all
+	$(MAKE) -C lib install
+	install gen $(PREFIX)/bin
+	install multimon $(PREFIX)/bin
+
 ifeq ($(BINDIR)/.depend,$(wildcard $(BINDIR)/.depend))
 include $(BINDIR)/.depend
 endif

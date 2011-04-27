@@ -58,6 +58,8 @@ dist:
 install: all
 	install $(BINDIR)/libmultimon.a $(PREFIX)/lib
 	install $(BINDIR)/libmultimon.so $(PREFIX)/lib
+	install $(ROOT)/include/multimon.h $(PREFIX)/include
+	install $(ROOT)/include/multimon_gen.h $(PREFIX)/include
 
 ifeq ($(BINDIR)/.depend,$(wildcard $(BINDIR)/.depend))
 include $(BINDIR)/.depend

@@ -21,7 +21,9 @@ OBJ_L2		=$(SRC_L2:%.c=$(BINDIR)/%.o)
 OBJ_MISC	=$(SRC_MISC:%.c=$(BINDIR)/%.o)
 OBJ_GEN		=$(SRC_GEN:%.c=$(BINDIR)/%.o)
 
-all:		$(BINDIR) $(BINDIR)/libmultimon.a $(BINDIR)/libmultimon.so
+LIB_SO		=libmultimon.so.$(VER_MAJ).$(VER_MIN)
+
+all:		$(BINDIR) $(BINDIR)/libmultimon.a $(BINDIR)/$(LIB_SO)
 
 $(BINDIR):
 	$(MKDIR) $(BINDIR)
@@ -29,8 +31,8 @@ $(BINDIR):
 $(BINDIR)/libmultimon.a:	$(OBJ_L1) $(OBJ_L2) $(OBJ_GEN) $(OBJ_MISC)
 	$(AR) rcs $@ $^
 
-$(BINDIR)/libmultimon.so:	$(OBJ_L1) $(OBJ_L2) $(OBJ_GEN) $(OBJ_MISC)
-	$(CC) -shared -Wl,-soname,$($@:$(BINDIR)/%=%) $(LDFLAGS) -o $@ $^
+$(BINDIR)/$(LIB_SO):	$(OBJ_L1) $(OBJ_L2) $(OBJ_GEN) $(OBJ_MISC)
+	$(CC) -shared -Wl,-soname,$(LIB_SO:%.$(VER_MAJ).$(VER_MIN)=%) $(LDFLAGS) -o $@ $^
 
 $(BINDIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
@@ -57,7 +59,7 @@ dist:
 
 install: all
 	install $(BINDIR)/libmultimon.a $(PREFIX)/lib
-	install $(BINDIR)/libmultimon.so $(PREFIX)/lib
+	install $(BINDIR)/$(LIB_SO) $(PREFIX)/lib
 	install $(ROOT)/include/multimon.h $(PREFIX)/include
 	install $(ROOT)/include/multimon_gen.h $(PREFIX)/include
 

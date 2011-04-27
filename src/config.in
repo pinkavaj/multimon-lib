@@ -2,6 +2,9 @@ DEBUG		=n
 OS		=$(shell uname)
 MACH		=$(shell uname -m)
 
+VER_MAJ=0
+VER_MIN=1
+
 CFLAGS		=-Wall -Wstrict-prototypes -I/usr/X11R6/include -I$(ROOT)/include -I
 ifeq ($(OS),SunOS)
 ifeq ($(DEBUG),y)

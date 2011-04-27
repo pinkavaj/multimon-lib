@@ -1,0 +1,24 @@
+multimin-lib
+
+Is library based on multimon program used to decode digital radio 
+transmissions.
+
+This port is maily used to decode ZVEI codes but other should work too.
+Supported are all transmission originaly supporte by multimon program.
+
+namely
+ * AX.25
+   * 1200 Baud AFSK
+   * 2400 Baud AFSK (2 variants)
+   * 4800 Baud HAPN
+   * 9600 Baud FSK (G3RUH)
+ * POCSAG
+   * 512 Baud
+   * 1200 Baud
+   * 2400 Baud
+ * Miscellaneous
+   * DTMF
+   * ZVEI
+
+Patches are wellcome.
+

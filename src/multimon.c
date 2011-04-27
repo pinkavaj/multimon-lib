@@ -51,7 +51,7 @@ static const char *allowed_types[] = {
 
 /* ---------------------------------------------------------------------- */
 
-static const struct demod_param *dem[] = { ALL_DEMOD };
+static const struct demod_param *dem[] = { ALL_DEMOD, &demod_scope };
 
 #define NUMDEMOD (sizeof(dem)/sizeof(dem[0]))
 

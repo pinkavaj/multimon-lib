@@ -151,7 +151,7 @@ extern const struct demod_param demod_scope;
 
 #define ALL_DEMOD &demod_poc5, &demod_poc12, &demod_poc24, \
 &demod_afsk1200, &demod_afsk2400, &demod_afsk2400_2, &demod_hapn4800, \
-&demod_fsk9600, &demod_dtmf, &demod_zvei, &demod_scope
+&demod_fsk9600, &demod_dtmf, &demod_zvei
 
 /* ---------------------------------------------------------------------- */
 

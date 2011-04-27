@@ -1,5 +1,5 @@
 /*
- *      gen.h -- generate different test signals
+ *      multimon_gen.h -- generate different test signals
  *
  *      Copyright (C) 1997
  *          Thomas Sailer (sailer@ife.ee.ethz.ch, hb9jnx@hb9w.che.eu)

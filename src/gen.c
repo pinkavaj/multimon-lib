@@ -480,10 +480,10 @@ int main(int argc, char *argv[])
 			params[num_gen-1].p.hdlc.pkt[13] = ((0x00) << 1) | 1;
 			params[num_gen-1].p.hdlc.pkt[14] = 0x03;
 			params[num_gen-1].p.hdlc.pkt[15] = 0xf0;
-			strncpy(params[num_gen-1].p.hdlc.pkt+16, optarg, 
+			strncpy((char *)params[num_gen-1].p.hdlc.pkt+16, optarg, 
 				sizeof(params[num_gen-1].p.hdlc.pkt)-16);
 			params[num_gen-1].p.hdlc.pktlen = 16 + 
-				strlen(params[num_gen-1].p.hdlc.pkt+16);
+				strlen((char *)params[num_gen-1].p.hdlc.pkt+16);
 		}
 	}
 		

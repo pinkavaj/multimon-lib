@@ -47,7 +47,8 @@ static void hapn48_init(struct demod_state *s)
 
 static void hapn48_demod(struct demod_state *s, float *buffer, int length)
 {
-	int cursync;
+        // WTF?
+	//int cursync;
 	unsigned int curbit;
 
 	for (; length > 0; length--, buffer++) {
@@ -57,15 +58,15 @@ static void hapn48_demod(struct demod_state *s, float *buffer, int length)
 			s->l1.hapn48.lvlhi = buffer[1];
 		if (buffer[1] < s->l1.hapn48.lvllo)
 			s->l1.hapn48.lvllo = buffer[1];
-		cursync = 0;
+		// cursync = 0;
 		s->l1.hapn48.shreg = (s->l1.hapn48.shreg << 1) | 
 			(s->l1.hapn48.shreg & 1);
 		if (buffer[1] > s->l1.hapn48.lvlhi * 0.5) {
 			s->l1.hapn48.shreg |= 1;
-			cursync = (buffer[1] > buffer[0] && buffer[1] > buffer[2]);
+			// cursync = (buffer[1] > buffer[0] && buffer[1] > buffer[2]);
 		} else if (buffer[1] < s->l1.hapn48.lvllo * 0.5) {
 			s->l1.hapn48.shreg &= ~1;
-			cursync = (buffer[1] < buffer[0] && buffer[1] < buffer[2]);
+			// cursync = (buffer[1] < buffer[0] && buffer[1] < buffer[2]);
 		}
 		verbprintf(10, "%c", '0' + (s->l1.hapn48.shreg & 1));
 		s->l1.hapn48.sphase += SPHASEINC;

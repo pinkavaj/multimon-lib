@@ -155,6 +155,8 @@ extern const struct demod_param demod_scope;
 
 /* ---------------------------------------------------------------------- */
 
+extern int multimon_debug_level;
+
 void verbprintf(int verb_level, const char *fmt, ...);
 
 void hdlc_init(struct demod_state *s);

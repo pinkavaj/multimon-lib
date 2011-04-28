@@ -1,6 +1,6 @@
 #include "multimon.h"
 
-extern int multimon_debug_level = 0;
+int multimon_debug_level;
 
 #ifdef DEBUG
 void verbprintf(int verb_level, const char *fmt, ...)

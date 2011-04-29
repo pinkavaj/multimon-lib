@@ -165,9 +165,5 @@ void hdlc_rxbit(struct demod_state *s, int bit);
 void pocsag_init(struct demod_state *s);
 void pocsag_rxbit(struct demod_state *s, int bit);
 
-void xdisp_terminate(int cnum);
-int xdisp_start(void);
-int xdisp_update(int cnum, float *f);
-
 /* ---------------------------------------------------------------------- */
 #endif /* _MULTIMON_H */

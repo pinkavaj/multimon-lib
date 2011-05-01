@@ -83,11 +83,14 @@ static void ax25_disp_packet(struct demod_state *s, unsigned char *bp, unsigned 
 {
         unsigned char v1=1,cmd=0;
         unsigned char i,j;
+        int crc_ok;
 
         if (!bp || len < 10) 
 		return;
 #if 1
-	if (!check_crc_ccitt(bp, len))
+	crc_ok = check_crc_ccitt(bp, len);
+        s->event_handler(!crc_ok, bp, len);
+	if (!crc_ok)
 		return;
 #endif
 	len -= 2;
@@ -248,7 +251,8 @@ void hdlc_init(struct demod_state *s)
 void hdlc_rxbit(struct demod_state *s, int bit)
 {
 	s->l2.hdlc.rxbitstream <<= 1;
-	s->l2.hdlc.rxbitstream |= !!bit;
+        if (bit)
+                s->l2.hdlc.rxbitstream |= 1;
 	if ((s->l2.hdlc.rxbitstream & 0xff) == 0x7e) {
 		if (s->l2.hdlc.rxstate && (s->l2.hdlc.rxptr - s->l2.hdlc.rxbuf) > 2)
 			ax25_disp_packet(s, s->l2.hdlc.rxbuf, s->l2.hdlc.rxptr - s->l2.hdlc.rxbuf);

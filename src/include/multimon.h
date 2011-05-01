@@ -32,8 +32,11 @@ extern const float costabf[0x400];
 
 /* ---------------------------------------------------------------------- */
 
+typedef void (*demod_event_t)(int state, const unsigned char *data, int len);
+
 struct demod_state {
 	const struct demod_param *dem_par;
+        demod_event_t event_handler;
 	union {
 		struct l2_state_hdlc {
 			unsigned char rxbuf[512];
@@ -42,38 +45,8 @@ struct demod_state {
 			unsigned int rxbitstream;
 			unsigned int rxbitbuf;
 		} hdlc;
-
-		struct l2_state_pocsag {
-			unsigned long rx_data;
-			struct l2_pocsag_rx {
-				unsigned char rx_sync;
-				unsigned char rx_word;
-				unsigned char rx_bit;
-				char func;
-				unsigned long adr;
-				unsigned char buffer[128];
-				unsigned int numnibbles;
-			} rx[2];
-		} pocsag;
 	} l2;
 	union {
-		struct l1_state_poc5 {
-			unsigned int dcd_shreg;
-			unsigned int sphase;
-			unsigned int subsamp;
-		} poc5;
-
-		struct l1_state_poc12 {
-			unsigned int dcd_shreg;
-			unsigned int sphase;
-			unsigned int subsamp;
-		} poc12;
-
-		struct l1_state_poc24 {
-			unsigned int dcd_shreg;
-			unsigned int sphase;
-		} poc24;
-
 		struct l1_state_afsk12 {
 			unsigned int dcd_shreg;
 			unsigned int sphase;
@@ -115,6 +88,7 @@ struct demod_state {
 			int lastch;
 		} zvei;
 
+                // FIXME: move to xdisplay
 		struct l1_state_scope {
 			int datalen;
 			int dispnum;
@@ -127,15 +101,11 @@ struct demod_param {
 	const char *name;
 	unsigned int samplerate;
 	unsigned int overlap;
-	void (*init)(struct demod_state *s);
+	void (*init)(struct demod_state *s, demod_event_t de);
 	void (*demod)(struct demod_state *s, float *buffer, int length);
 };
 
 /* ---------------------------------------------------------------------- */
-
-extern const struct demod_param demod_poc5;
-extern const struct demod_param demod_poc12;
-extern const struct demod_param demod_poc24;
 
 extern const struct demod_param demod_afsk1200;
 extern const struct demod_param demod_afsk2400;
@@ -149,7 +119,7 @@ extern const struct demod_param demod_zvei;
 
 extern const struct demod_param demod_scope;
 
-#define ALL_DEMOD &demod_poc5, &demod_poc12, &demod_poc24, \
+#define ALL_DEMOD \
 &demod_afsk1200, &demod_afsk2400, &demod_afsk2400_2, &demod_hapn4800, \
 &demod_fsk9600, &demod_dtmf, &demod_zvei
 
@@ -161,9 +131,6 @@ void verbprintf(int verb_level, const char *fmt, ...);
 
 void hdlc_init(struct demod_state *s);
 void hdlc_rxbit(struct demod_state *s, int bit);
-
-void pocsag_init(struct demod_state *s);
-void pocsag_rxbit(struct demod_state *s, int bit);
 
 /* ---------------------------------------------------------------------- */
 #endif /* _MULTIMON_H */

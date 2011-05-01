@@ -66,7 +66,6 @@ static unsigned int dem_mask[(NUMDEMOD+31)/32];
 extern int multimon_debug_level;
 
 /* ---------------------------------------------------------------------- */
-
 static void process_buffer(float *buf, unsigned int len)
 {
 	int i;
@@ -74,6 +73,23 @@ static void process_buffer(float *buf, unsigned int len)
 	for (i = 0; i <  NUMDEMOD; i++) 
 		if (MASK_ISSET(i) && dem[i]->demod)
 			dem[i]->demod(dem_st+i, buf, len);
+}
+
+/**
+ * Hanhle recieving of demodulated data, print it to std out
+ */
+static void print_data(int state, const unsigned char *data, int len)
+{
+        if (state == 0) {
+                int x;
+
+                // TODO: print data about demodulator (its name)
+                for (x = 0; x < len; x++)
+                        printf("%.2x ", data[x]);
+                printf("\n");
+        }
+        else
+                printf("state: %i\n", state);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -445,7 +461,7 @@ int main(int argc, char *argv[])
 			memset(dem_st+i, 0, sizeof(dem_st[i]));
 			dem_st[i].dem_par = dem[i];
 			if (dem[i]->init)
-				dem[i]->init(dem_st+i);
+				dem[i]->init(dem_st+i, print_data);
 			if (sample_rate == -1)
 				sample_rate = dem[i]->samplerate;
 			else if (sample_rate != dem[i]->samplerate) {

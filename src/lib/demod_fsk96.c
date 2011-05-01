@@ -74,8 +74,9 @@ static const float inp_filt[3][24] = {
 
 /* ---------------------------------------------------------------------- */
 	
-static void fsk96_init(struct demod_state *s)
+static void fsk96_init(struct demod_state *s, demod_event_t de)
 {
+        s->event_handler = de;
 	hdlc_init(s);
 	memset(&s->l1.fsk96, 0, sizeof(s->l1.fsk96));
 }

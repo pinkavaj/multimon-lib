@@ -7,9 +7,8 @@ BINDIR		:=$(ROOT)/$(BINDIR)
 
 SRC_L1		=demod_afsk12.c demod_afsk24.c demod_afsk24_2.c
 SRC_L1		+=demod_hapn48.c demod_fsk96.c
-SRC_L1		+=demod_poc5.c demod_poc12.c demod_poc24.c
 SRC_L1		+=demod_dtmf.c demod_zvei.c
-SRC_L2		=hdlc.c pocsag.c
+SRC_L2		=hdlc.c
 SRC_MISC	=costabf.c filter.c debug.c
 ifeq ($(MACH),i686)
 SRC_MISC	+=filter-i386.c

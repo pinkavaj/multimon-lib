@@ -50,9 +50,10 @@ static const unsigned int zveis_freq[16] = {
 
 /* ---------------------------------------------------------------------- */
 	
-static void zvei_init(struct demod_state *s)
+static void zvei_init(struct demod_state *s, demod_event_t de)
 {
 	memset(&s->l1.zvei, 0, sizeof(s->l1.zvei));
+        s->event_handler = de;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -130,8 +131,11 @@ static void zvei_demod(struct demod_state *s, float *buffer, int length)
 		if ((s->l1.zvei.blkcount--) <= 0) {
 			s->l1.zvei.blkcount = BLOCKLEN;
 			i = process_block(s);
-			if (i != s->l1.zvei.lastch && i >= 0)
+			if (i != s->l1.zvei.lastch && i >= 0) {
+                                unsigned char c = i;
 				verbprintf(0, "ZVEI: %1x\n", i);
+                                s->event_handler(0, &c, 1);
+                        }
 			s->l1.zvei.lastch = i;
 		}
 	}

@@ -22,6 +22,7 @@
 /* ---------------------------------------------------------------------- */
 
 #include "multimon.h"
+#include "xdisplay.h"
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/time.h>
@@ -38,7 +39,7 @@
 
 /* ---------------------------------------------------------------------- */
 
-static void scope_init(struct demod_state *s)
+static void scope_init(struct demod_state *s, demod_event_t de)
 {
 	memset(&s->l1.scope, 0, sizeof(s->l1.scope));
 	s->l1.scope.dispnum = xdisp_start();

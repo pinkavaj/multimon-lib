@@ -52,12 +52,13 @@ static float corr_space_q[CORRLEN];
 
 /* ---------------------------------------------------------------------- */
 	
-static void afsk12_init(struct demod_state *s, demod_event_t de)
+static void afsk12_init(struct demod_state *s, demod_event_t de, void *ud)
 {
 	float f;
 	int i;
 
         s->event_handler = de;
+        s->user_data = ud;
 	hdlc_init(s);
 	memset(&s->l1.afsk12, 0, sizeof(s->l1.afsk12));
 	for (f = 0, i = 0; i < CORRLEN; i++) {

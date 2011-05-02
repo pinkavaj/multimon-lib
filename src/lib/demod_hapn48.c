@@ -37,9 +37,10 @@
 
 /* ---------------------------------------------------------------------- */
 	
-static void hapn48_init(struct demod_state *s, demod_event_t de)
+static void hapn48_init(struct demod_state *s, demod_event_t de, void *ud)
 {
         s->event_handler = de;
+        s->user_data = ud;
 	hdlc_init(s);
 	memset(&s->l1.hapn48, 0, sizeof(s->l1.hapn48));
 }

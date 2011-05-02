@@ -39,9 +39,11 @@
 
 /* ---------------------------------------------------------------------- */
 
-static void scope_init(struct demod_state *s, demod_event_t de)
+static void scope_init(struct demod_state *s, demod_event_t de, void *ud)
 {
 	memset(&s->l1.scope, 0, sizeof(s->l1.scope));
+        s->event_handler = de;
+        s->user_data = ud;
 	s->l1.scope.dispnum = xdisp_start();
 	if (s->l1.scope.dispnum == -1)
 		return;

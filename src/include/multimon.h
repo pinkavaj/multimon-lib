@@ -32,11 +32,13 @@ extern const float costabf[0x400];
 
 /* ---------------------------------------------------------------------- */
 
-typedef void (*demod_event_t)(int state, const unsigned char *data, int len);
+typedef void (*demod_event_t)(void *user_data, int state,
+                const unsigned char *data, int len);
 
 struct demod_state {
 	const struct demod_param *dem_par;
         demod_event_t event_handler;
+        void *user_data;
 	union {
 		struct l2_state_hdlc {
 			unsigned char rxbuf[512];
@@ -101,7 +103,7 @@ struct demod_param {
 	const char *name;
 	unsigned int samplerate;
 	unsigned int overlap;
-	void (*init)(struct demod_state *s, demod_event_t de);
+	void (*init)(struct demod_state *s, demod_event_t de, void *ud);
 	void (*demod)(struct demod_state *s, float *buffer, int length);
 };
 

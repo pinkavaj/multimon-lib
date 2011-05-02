@@ -78,7 +78,8 @@ static void process_buffer(float *buf, unsigned int len)
 /**
  * Hanhle recieving of demodulated data, print it to std out
  */
-static void print_data(int state, const unsigned char *data, int len)
+static void print_data(void *user_data, int state, 
+                const unsigned char *data, int len)
 {
         if (state == 0) {
                 int x;
@@ -461,7 +462,7 @@ int main(int argc, char *argv[])
 			memset(dem_st+i, 0, sizeof(dem_st[i]));
 			dem_st[i].dem_par = dem[i];
 			if (dem[i]->init)
-				dem[i]->init(dem_st+i, print_data);
+				dem[i]->init(dem_st+i, print_data, NULL);
 			if (sample_rate == -1)
 				sample_rate = dem[i]->samplerate;
 			else if (sample_rate != dem[i]->samplerate) {

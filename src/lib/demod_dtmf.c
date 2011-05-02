@@ -55,9 +55,10 @@ static const unsigned int dtmf_phinc[8] = {
 
 /* ---------------------------------------------------------------------- */
 	
-static void dtmf_init(struct demod_state *s, demod_event_t de)
+static void dtmf_init(struct demod_state *s, demod_event_t de, void *ud)
 {
         s->event_handler = de;
+        s->user_data = ud;
 	memset(&s->l1.dtmf, 0, sizeof(s->l1.dtmf));
 }
 
@@ -139,7 +140,7 @@ static void dtmf_demod(struct demod_state *s, float *buffer, int length)
 			if (i != s->l1.dtmf.lastch && i >= 0) {
                                 unsigned char c = i;
 
-                                s->event_handler(0, &c, 1);
+                                s->event_handler(s->user_data, 0, &c, 1);
 				verbprintf(0, "DTMF: %c\n", dtmf_transl[i]);
                         }
 			s->l1.dtmf.lastch = i;

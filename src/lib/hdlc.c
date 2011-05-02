@@ -89,7 +89,7 @@ static void ax25_disp_packet(struct demod_state *s, unsigned char *bp, unsigned 
 		return;
 #if 1
 	crc_ok = check_crc_ccitt(bp, len);
-        s->event_handler(!crc_ok, bp, len);
+        s->event_handler(s->user_data, !crc_ok, bp, len);
 	if (!crc_ok)
 		return;
 #endif

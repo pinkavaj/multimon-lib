@@ -22,6 +22,7 @@
 /* ---------------------------------------------------------------------- */
 
 #include "multimon.h"
+#include "multimon_int.h"
 #include "filter.h"
 #include <math.h>
 #include <string.h>
@@ -50,9 +51,11 @@ static const unsigned int zveis_freq[16] = {
 
 /* ---------------------------------------------------------------------- */
 	
-static void zvei_init(struct demod_state *s)
+static void zvei_init(struct demod_state *s, demod_callback_t callback,
+        void *user_data)
 {
 	memset(&s->l1.zvei, 0, sizeof(s->l1.zvei));
+    demod_init(s, callback, user_data);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -101,10 +104,10 @@ static inline int process_block(struct demod_state *s)
 		sizeof(s->l1.zvei.tenergy) - sizeof(s->l1.zvei.tenergy[0]));
 	memset(s->l1.zvei.tenergy, 0, sizeof(s->l1.zvei.tenergy[0]));
 	tote *= (BLOCKNUM*BLOCKLEN*0.5);  /* adjust for block lengths */
-	verbprintf(10, "ZVEI: Energies: %8.5f  %8.5f %8.5f %8.5f %8.5f %8.5f %8.5f %8.5f %8.5f"
-		   " %8.5f %8.5f %8.5f %8.5f %8.5f %8.5f %8.5f %8.5f\n",
-		   tote, totte[0], totte[1], totte[2], totte[3], totte[4], totte[5], totte[6], totte[7],
-		   totte[8], totte[9], totte[10], totte[11], totte[12], totte[13], totte[14], totte[15]);
+	//verbprintf(10, "ZVEI: Energies: %8.5f  %8.5f %8.5f %8.5f %8.5f %8.5f %8.5f %8.5f %8.5f"
+		   //" %8.5f %8.5f %8.5f %8.5f %8.5f %8.5f %8.5f %8.5f\n",
+		   //tote, totte[0], totte[1], totte[2], totte[3], totte[4], totte[5], totte[6], totte[7],
+		   //totte[8], totte[9], totte[10], totte[11], totte[12], totte[13], totte[14], totte[15]);
 	if ((i = find_max_idx(totte)) < 0)
 		return -1;
 	if ((tote * 0.4) > totte[i])
@@ -130,8 +133,10 @@ static void zvei_demod(struct demod_state *s, float *buffer, int length)
 		if ((s->l1.zvei.blkcount--) <= 0) {
 			s->l1.zvei.blkcount = BLOCKLEN;
 			i = process_block(s);
-			if (i != s->l1.zvei.lastch && i >= 0)
-				verbprintf(0, "ZVEI: %1x\n", i);
+			if (i != s->l1.zvei.lastch && i >= 0) {
+                s->demod_callback(i, 0, s->user_data);
+				//verbprintf(0, "ZVEI: %1x\n", i);
+            }
 			s->l1.zvei.lastch = i;
 		}
 	}

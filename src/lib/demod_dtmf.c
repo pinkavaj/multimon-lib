@@ -22,6 +22,7 @@
 /* ---------------------------------------------------------------------- */
 
 #include "multimon.h"
+#include "multimon_int.h"
 #include "filter.h"
 #include <math.h>
 #include <string.h>
@@ -46,7 +47,7 @@
 
 #define PHINC(x) ((x)*0x10000/SAMPLE_RATE)
 
-static const char *dtmf_transl = "123A456B789C*0#D";
+//static const char *dtmf_transl = "123A456B789C*0#D";
 
 static const unsigned int dtmf_phinc[8] = {
 	PHINC(1209), PHINC(1336), PHINC(1477), PHINC(1633),
@@ -55,9 +56,11 @@ static const unsigned int dtmf_phinc[8] = {
 
 /* ---------------------------------------------------------------------- */
 	
-static void dtmf_init(struct demod_state *s)
+static void dtmf_init(struct demod_state *s, demod_callback_t callback,
+        void *user_data)
 {
 	memset(&s->l1.dtmf, 0, sizeof(s->l1.dtmf));
+    demod_init(s, callback, user_data);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -106,8 +109,8 @@ static inline int process_block(struct demod_state *s)
 		sizeof(s->l1.dtmf.tenergy) - sizeof(s->l1.dtmf.tenergy[0]));
 	memset(s->l1.dtmf.tenergy, 0, sizeof(s->l1.dtmf.tenergy[0]));
 	tote *= (BLOCKNUM*BLOCKLEN*0.5);  /* adjust for block lengths */
-	verbprintf(10, "DTMF: Energies: %8.5f  %8.5f %8.5f %8.5f %8.5f  %8.5f %8.5f %8.5f %8.5f\n",
-		   tote, totte[0], totte[1], totte[2], totte[3], totte[4], totte[5], totte[6], totte[7]);
+	//verbprintf(10, "DTMF: Energies: %8.5f  %8.5f %8.5f %8.5f %8.5f  %8.5f %8.5f %8.5f %8.5f\n",
+		   //tote, totte[0], totte[1], totte[2], totte[3], totte[4], totte[5], totte[6], totte[7]);
 	if ((i = find_max_idx(totte)) < 0)
 		return -1;
 	if ((j = find_max_idx(totte+4)) < 0)
@@ -135,8 +138,10 @@ static void dtmf_demod(struct demod_state *s, float *buffer, int length)
 		if ((s->l1.dtmf.blkcount--) <= 0) {
 			s->l1.dtmf.blkcount = BLOCKLEN;
 			i = process_block(s);
-			if (i != s->l1.dtmf.lastch && i >= 0)
-				verbprintf(0, "DTMF: %c\n", dtmf_transl[i]);
+			if (i != s->l1.dtmf.lastch && i >= 0) {
+				//verbprintf(0, "DTMF: %c\n", dtmf_transl[i]);
+                s->demod_callback(i, 0, s->user_data);
+            }
 			s->l1.dtmf.lastch = i;
 		}
 	}

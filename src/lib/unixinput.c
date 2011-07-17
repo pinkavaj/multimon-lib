@@ -458,7 +458,7 @@ int main(int argc, char *argv[])
 			memset(dem_st+i, 0, sizeof(dem_st[i]));
 			dem_st[i].dem_par = dem[i];
 			if (dem[i]->init)
-				dem[i]->init(dem_st+i);
+				dem[i]->init(dem_st+i, NULL, NULL);
 			if (sample_rate == -1)
 				sample_rate = dem[i]->samplerate;
 			else if (sample_rate != dem[i]->samplerate) {

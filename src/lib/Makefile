@@ -48,16 +48,11 @@ AR		=ar
 STRIP		=strip
 MKDIR		=mkdir
 
-SRC_L1		=demod_afsk12.c demod_afsk24.c demod_afsk24_2.c
-SRC_L1		+=demod_hapn48.c demod_fsk96.c
-SRC_L1		+=demod_poc5.c demod_poc12.c demod_poc24.c
-SRC_L1		+=demod_dtmf.c demod_zvei.c demod_display.c
-SRC_L2		=hdlc.c pocsag.c
-SRC_APP		=unixinput.c costabf.c xdisplay.c
+SRC_L1		+=demod_dtmf.c demod_zvei.c multimon_int.c costabf.c 
+SRC_APP		=unixinput.c xdisplay.c
 SRC_GEN		=gen.c gen_dtmf.c gen_sin.c gen_zvei.c gen_hdlc.c costabi.c
 
 OBJ_L1		=$(SRC_L1:%.c=$(BINDIR)/%.o)
-OBJ_L2		=$(SRC_L2:%.c=$(BINDIR)/%.o)
 OBJ_MISC	=$(SRC_APP:%.c=$(BINDIR)/%.o)
 OBJ_GEN		=$(SRC_GEN:%.c=$(BINDIR)/%.o)
 
@@ -66,14 +61,14 @@ all:		$(BINDIR) $(BINDIR)/gen $(BINDIR)/libmultimon.so.0.0 $(BINDIR)/multimon
 $(BINDIR)/gen:		$(OBJ_GEN)
 			$(CC) $^ $(LDFLAGS) -o $@
 
-$(BINDIR)/libmultimon.so.0.0:	$(OBJ_L1) $(OBJ_L2)
+$(BINDIR)/libmultimon.so.0.0:	$(OBJ_L1)
 	$(CC) -shared -Wl,-soname,$($@:$(BINDIR)/%.0.0=%) $(LDFLAGS) -o $@ $^
 	# TODO
 
-$(BINDIR)/multimon:	$(BINDIR)/libmultimon.a
+$(BINDIR)/multimon:	$(OBJ_MISC) $(BINDIR)/libmultimon.a 
 			$(CC) $^ $(LDFLAGS) $(LDFLAGSX) -o $@
 
-$(BINDIR)/libmultimon.a:	$(OBJ_L1) $(OBJ_L2) $(OBJ_MISC)
+$(BINDIR)/libmultimon.a:	$(OBJ_L1)
 	$(AR) rcs $@ $^
 
 $(BINDIR)/%.s:	%.c
@@ -102,11 +97,11 @@ clean:
 
 
 depend dep:	$(BINDIR) costabi.c costabf.c
-	$(CPP) -M $(CFLAGS) $(SRC_APP) $(SRC_L1) $(SRC_L2) $(SRC_GEN) mkcostab.c > $(BINDIR)/.depend
+	$(CPP) -M $(CFLAGS) $(SRC_APP) $(SRC_L1) $(SRC_GEN) mkcostab.c > $(BINDIR)/.depend
 
 dist:
 	tar cjf multimon.tar.bz2 COPYING Makefile filter.h filter-i386.h gen.h multimon.h \
-		$(SRC_APP) $(SRC_L1) $(SRC_L2) $(SRC_GEN) mkcostab.c
+		$(SRC_APP) $(SRC_L1) $(SRC_GEN) mkcostab.c
 
 install:
 	install $(BINDIR)/libmultimon.a $(PREFIX)/lib

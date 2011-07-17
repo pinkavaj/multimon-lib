@@ -75,7 +75,7 @@ static inline unsigned char even_parity(unsigned long data)
 
 /* ---------------------------------------------------------------------- */
 
-static unsigned long pocsag_code(unsigned long data) 
+/*static unsigned long pocsag_code(unsigned long data) 
 {
 	unsigned long ret = data << (BCH_N-BCH_K), shreg = ret;
 	unsigned long mask = 1L << (BCH_N-1), coeff = BCH_POLY << (BCH_K-1);
@@ -89,7 +89,7 @@ static unsigned long pocsag_code(unsigned long data)
 	verbprintf(9, "BCH coder: data: %08lx shreg: %08lx ret: %08lx\n", 
 		   data, shreg, ret);
 	return ret;
-}
+}*/
 
 /* ---------------------------------------------------------------------- */
 

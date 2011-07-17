@@ -2,7 +2,8 @@ DEBUG		=n
 OS		=$(shell uname)
 MACH		=$(shell uname -m)
 
-CFLAGS		=-Wall -Wstrict-prototypes -I/usr/X11R6/include -I../include
+PREFIX=/usr/local
+CFLAGS		=-Wall -fPIC -Wstrict-prototypes -I/usr/X11R6/include -I../include
 ifeq ($(OS),SunOS)
 ifeq ($(DEBUG),y)
 CFLAGS		+=-g -O -DSUN_AUDIO -DARCH_SPARC
@@ -60,13 +61,13 @@ OBJ_L2		=$(SRC_L2:%.c=$(BINDIR)/%.o)
 OBJ_MISC	=$(SRC_APP:%.c=$(BINDIR)/%.o)
 OBJ_GEN		=$(SRC_GEN:%.c=$(BINDIR)/%.o)
 
-all:		$(BINDIR) $(BINDIR)/gen $(BINDIR)/libmultimon.so $(BINDIR)/multimon
+all:		$(BINDIR) $(BINDIR)/gen $(BINDIR)/libmultimon.so.0.0 $(BINDIR)/multimon
 
 $(BINDIR)/gen:		$(OBJ_GEN)
 			$(CC) $^ $(LDFLAGS) -o $@
 
-$(BINDIR)/libmultimon.so:	$(OBJ_L1) $(OBJ_L2)
-	$(CC) -shared -Wl,-soname,$($@:$(BINDIR)/%=%) $(LDFLAGS) -o $@ $^
+$(BINDIR)/libmultimon.so.0.0:	$(OBJ_L1) $(OBJ_L2)
+	$(CC) -shared -Wl,-soname,$($@:$(BINDIR)/%.0.0=%) $(LDFLAGS) -o $@ $^
 	# TODO
 
 $(BINDIR)/multimon:	$(BINDIR)/libmultimon.a
@@ -76,36 +77,43 @@ $(BINDIR)/libmultimon.a:	$(OBJ_L1) $(OBJ_L2) $(OBJ_MISC)
 	$(AR) rcs $@ $^
 
 $(BINDIR)/%.s:	%.c
-		$(CC) $(CFLAGS) -S -o $@ $<
+	$(CC) $(CFLAGS) -S -o $@ $<
 
 $(BINDIR)/%.o:	$(BINDIR)/%.s
-		$(AS) -c -o $@ $<
+	$(AS) -c -o $@ $<
 
 $(BINDIR)/%.o:	%.c
-		$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(BINDIR):	$(BUILDDIR)
-		$(MKDIR) $(BINDIR)
+	$(MKDIR) $(BINDIR)
 
 $(BINDIR)/mkcostab:	$(BINDIR)/mkcostab.o
-			$(CC) $^ $(LDFLAGS) -o $@
+	$(CC) $^ $(LDFLAGS) -o $@
 
 costabi.c costabf.c:	$(BINDIR)/mkcostab
-			$(BINDIR)/mkcostab
+	$(BINDIR)/mkcostab
 
 clean:
-		$(RM) -f core `find . -name '*.[oas]' -print`
-		$(RM) -f core `find . -name 'core' -print`
-		$(RM) -f core costabi.c costabf.c *~ multimon.tar.bz2
-		$(RM) -rf $(BINDIR)
+	$(RM) -f core `find . -name '*.[oas]' -print`
+	$(RM) -f core `find . -name 'core' -print`
+	$(RM) -f core costabi.c costabf.c *~ multimon.tar.bz2
+	$(RM) -rf $(BINDIR)
 
 
 depend dep:	$(BINDIR) costabi.c costabf.c
-		$(CPP) -M $(CFLAGS) $(SRC_APP) $(SRC_L1) $(SRC_L2) $(SRC_GEN) mkcostab.c > $(BINDIR)/.depend
+	$(CPP) -M $(CFLAGS) $(SRC_APP) $(SRC_L1) $(SRC_L2) $(SRC_GEN) mkcostab.c > $(BINDIR)/.depend
 
 dist:
-		tar cjf multimon.tar.bz2 COPYING Makefile filter.h filter-i386.h gen.h multimon.h \
-			$(SRC_APP) $(SRC_L1) $(SRC_L2) $(SRC_GEN) mkcostab.c
+	tar cjf multimon.tar.bz2 COPYING Makefile filter.h filter-i386.h gen.h multimon.h \
+		$(SRC_APP) $(SRC_L1) $(SRC_L2) $(SRC_GEN) mkcostab.c
+
+install:
+	install $(BINDIR)/libmultimon.a $(PREFIX)/lib
+	install $(BINDIR)/libmultimon.so.0.0 $(PREFIX)/lib
+	install $(BINDIR)/multimon $(PREFIX)/bin
+	install $(BINDIR)/gen $(PREFIX)/bin
+	cp ../include/multimon.h $(PREFIX)/include/
 
 ifeq ($(BINDIR)/.depend,$(wildcard $(BINDIR)/.depend))
 include $(BINDIR)/.depend
